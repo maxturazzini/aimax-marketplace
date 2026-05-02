@@ -20,23 +20,50 @@ This repository contains:
 
 ## Install
 
-In a Claude Code session, run:
+Claude Code installs plugins from **marketplaces**. This repo is itself a single-plugin marketplace, so installation is two shell commands:
 
-```
-/plugin install https://github.com/maxturazzini/shareme
+```bash
+# 1. Register this repo as a marketplace
+claude plugin marketplace add maxturazzini/shareme
+
+# 2. Install the plugin from it
+claude plugin install shareme@shareme
 ```
 
-The skill becomes available as `/shareme:generate`. Verify with `/plugin list` — you should see `shareme` listed.
+The first command clones the repo into `~/.claude/plugins/marketplaces/shareme/`. The second installs the plugin defined inside it. The skill becomes available as `/shareme:generate` in any Claude Code session.
+
+### Verify
+
+```bash
+claude plugin list
+```
+
+You should see `shareme` in the output. In a Claude Code session, typing `/shareme:` should suggest `generate` as available.
+
+### Update later
+
+```bash
+claude plugin marketplace update shareme   # pulls latest changes
+claude plugin update shareme                # applies them (restart required)
+```
+
+### Uninstall
+
+```bash
+claude plugin uninstall shareme
+claude plugin marketplace remove shareme
+```
 
 ### Try it without installing (development / one-shot)
 
-You can also load the plugin for a single Claude Code session without installing:
+To test a local clone or a fork without going through the marketplace:
 
 ```bash
-claude --plugin-dir /path/to/cloned/shareme
+git clone https://github.com/maxturazzini/shareme.git
+claude --plugin-dir ./shareme
 ```
 
-This is useful for testing a fork or a local clone before publishing.
+The plugin is loaded for that single Claude Code session only.
 
 ## Use
 

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "shareme",
+  "description": "Standard and skill for adopting Claude Code skills consciously. Generates SHAREME.md companion docs explaining what a skill does, what it touches, and how to adapt it.",
+  "owner": {
+    "name": "Max Turazzini",
+    "url": "https://github.com/maxturazzini"
+  },
+  "plugins": [
+    {
+      "name": "shareme",
+      "description": "Generates SHAREME.md companion documentation for any Claude Code skill. Produces a sibling _shared/ folder with TODO_ADAPT markers. Never modifies the original skill.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Max Turazzini",
+        "url": "https://github.com/maxturazzini"
+      },
+      "source": "./",
+      "category": "developer-tools",
+      "homepage": "https://github.com/maxturazzini/shareme",
+      "license": "MIT"
+    }
+  ]
+}
