@@ -1,0 +1,18 @@
+{
+  "name": "shareme",
+  "description": "Standard and skill for adopting Claude Code skills consciously. Generates SHAREME.md companion docs that explain what a skill does, what it touches, and how to adapt it.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Max Turazzini"
+  },
+  "homepage": "https://maxturazzini.com",
+  "repository": "https://github.com/maxturazzini/shareme",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "skill",
+    "documentation",
+    "adoption",
+    "standard"
+  ]
+}

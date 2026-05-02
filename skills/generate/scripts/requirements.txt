@@ -1,0 +1,3 @@
+# /shareme:generate uses only Python standard library at the moment.
+# This file is reserved for future dependencies (e.g., a real YAML parser
+# if the analyzer grows beyond regex-based detection).
