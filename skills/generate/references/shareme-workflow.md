@@ -44,21 +44,21 @@ Relative path from the skill scripts folder: `../../`. Use the absolute path whe
 
    Ask before tagging brand names or ambiguous strings as author-specific.
 
-4. **Generate SHAREME.md**: run
+4. **Copy and mark FIRST**: `sanitize_skill.py` creates the sibling folder and copies the skill files with markers. It refuses to run if the target folder already exists, so it must run before any other script writes there.
+
+   ```
+   python <plugin_root>/skills/generate/scripts/sanitize_skill.py \
+       <target_path> <target_parent>/<target_name>_shared \
+       --analysis <tmp>/analysis.json [--sanitize]
+   ```
+
+5. **Generate SHAREME.md INSIDE the new folder**: now that the folder exists, write SHAREME.md into it.
 
    ```
    python <plugin_root>/skills/generate/scripts/generate_shareme.py \
        --analysis <tmp>/analysis.json \
        --template <plugin_root>/TEMPLATE.md \
        --output <target_parent>/<target_name>_shared/SHAREME.md
-   ```
-
-5. **Copy and mark**: run
-
-   ```
-   python <plugin_root>/skills/generate/scripts/sanitize_skill.py \
-       <target_path> <target_parent>/<target_name>_shared \
-       --analysis <tmp>/analysis.json [--sanitize]
    ```
 
 6. **Report to user**:

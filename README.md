@@ -20,26 +20,58 @@ This repository contains:
 
 ## Install
 
-```bash
-claude /plugin install https://github.com/maxturazzini/shareme
+In a Claude Code session, run:
+
+```
+/plugin install https://github.com/maxturazzini/shareme
 ```
 
-The skill becomes available as `/shareme:generate`.
+The skill becomes available as `/shareme:generate`. Verify with `/plugin list` — you should see `shareme` listed.
+
+### Try it without installing (development / one-shot)
+
+You can also load the plugin for a single Claude Code session without installing:
+
+```bash
+claude --plugin-dir /path/to/cloned/shareme
+```
+
+This is useful for testing a fork or a local clone before publishing.
 
 ## Use
 
-Generate a shareable copy of a skill you authored:
+In a Claude Code conversation, ask in plain language:
+
+> "Prepare my `weather-bot` skill for sharing — generate a SHAREME for it."
+
+Or invoke the skill directly:
 
 ```
-/shareme:generate my-cool-skill
+/shareme:generate weather-bot
 ```
 
-This creates `my-cool-skill_shared/` next to the original — a sibling folder containing:
+Or pass an absolute path if your skills don't live in `~/.claude/skills/`:
+
+```
+/shareme:generate path:/Users/me/projects/my-skill
+```
+
+Add `--sanitize` to also replace detected author-specific values with `${PLACEHOLDER}` syntax in the copy:
+
+```
+/shareme:generate weather-bot --sanitize
+```
+
+### What happens
+
+The skill creates a sibling folder `weather-bot_shared/` next to the original, containing:
 - A copy of the skill with `# TODO_ADAPT:` markers placed at author-specific points
-- A generated `SHAREME.md` following the standard
+- A generated `SHAREME.md` following the standard, pre-filled with detected facts
 - (with `--sanitize`) author-specific values replaced with `${PLACEHOLDER}` syntax
 
 The original skill is never modified.
+
+You then **review and edit** the generated SHAREME — automation gives you a draft, not a finished doc.
 
 ## Adopt a skill yourself
 

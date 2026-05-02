@@ -40,10 +40,10 @@ Given a target skill (by name in `~/.claude/skills/` or by absolute path):
 ## Workflow when invoked
 
 1. Resolve the target skill path
-2. Run `scripts/analyze_skill.py <path> --json` to produce a structured analysis
+2. Run `scripts/analyze_skill.py <path> --output /tmp/analysis.json` to produce structured analysis
 3. Review the analysis with the user, ask for confirmations on ambiguous detections (brand mentions, edge-case paths)
-4. Run `scripts/generate_shareme.py --analysis <json> --template ../../TEMPLATE.md --output <skill>_shared/SHAREME.md`
-5. Run `scripts/sanitize_skill.py <path> <skill>_shared/ [--sanitize]` to copy files with markers (and optionally with placeholders applied)
+4. Run `scripts/sanitize_skill.py <path> <skill>_shared --analysis /tmp/analysis.json [--sanitize]` FIRST — this creates the sibling folder and copies the skill with `# TODO_ADAPT:` markers. It refuses to run if the folder already exists.
+5. Run `scripts/generate_shareme.py --analysis /tmp/analysis.json --template ../../TEMPLATE.md --output <skill>_shared/SHAREME.md` to write the generated SHAREME.md INTO the just-created folder
 6. Show the user the output folder structure and the first 30 lines of the generated `SHAREME.md`
 7. Remind the user that they MUST review and edit the generated SHAREME before sharing — automation is a starting point, not a finished product
 
