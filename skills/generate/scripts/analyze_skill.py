@@ -50,6 +50,38 @@ EXTERNAL_TOOL_HINTS = [
 
 MCP_HINT = re.compile(r"mcp__[a-z0-9_]+", re.IGNORECASE)
 
+# Capitalized tokens that are likely author-specific proper nouns when they
+# appear with high frequency in prose (names, brand-prefixed identifiers).
+# Detection is heuristic: we surface candidates, the skill prompt asks the
+# user to confirm before sanitizing.
+PROPER_NOUN_RE = re.compile(r"\b[A-Z][a-zàèéìòùA-Z]{2,}(?:\s+[A-Z][a-zàèéìòù]+)?\b")
+
+# Tokens that look like proper nouns by capitalization but are common
+# English/Italian words, project structure, or technical terms — never flag.
+PROPER_NOUN_STOPWORDS = {
+    "Claude", "Code", "Skill", "Skills", "Tool", "Tools", "Read", "Write",
+    "Edit", "Bash", "Glob", "Grep", "Task", "Agent", "MCP", "API", "JSON",
+    "YAML", "URL", "URLs", "HTTP", "HTTPS", "SQL", "HTML", "CSS", "PDF",
+    "PDFs", "Python", "Node", "JavaScript", "TypeScript", "Markdown", "Git",
+    "GitHub", "Linux", "MacOS", "Windows", "OneDrive", "iCloud", "Dropbox",
+    "When", "If", "Use", "After", "Before", "STOP", "TODO", "FASE", "OBBLIGATORIO",
+    "Nota", "Note", "Esempio", "Esempi", "Example", "Examples", "Output", "Input",
+    "Path", "Paths", "File", "Files", "Folder", "Folders", "Directory", "Directories",
+    "Quando", "Mai", "Sempre", "Vero", "Falso", "True", "False", "None",
+    "Action", "Items", "Item", "Step", "Steps", "Phase", "Phases",
+    "AskUserQuestion", "TodoWrite", "WebFetch", "WebSearch",
+    "SHAREME", "SKILL", "TEMPLATE", "SPEC", "CONVENTIONS", "README", "LICENSE",
+    "SE", "FERMARSI", "FERMARTI", "FORMAT", "DIVERSO", "DUBBI", "PRESENTI",
+    # Common Italian words that often get capitalized at line/section starts.
+    "Cose", "Fare", "Punti", "Aperti", "Punti Aperti", "Cosa", "Cose Fatte",
+    "Tipologia", "Tipologie", "Cliente", "Clienti", "Progetto", "Progetti",
+    "Nome", "Data", "Dopo", "Prima", "Sempre", "Mai", "Anche",
+    "Introduzione", "Nuovo", "Nuova", "Nuovi", "Nuove",
+    "Riunione", "Workshop", "Training", "Call", "Meeting", "Sessione",
+    "Verbale", "Glossario", "Trascrizione",
+    "Presenta", "Domande", "Risposte", "Conferma", "Procedere",
+}
+
 SKIP_DIRS = {".git", "__pycache__", ".venv", "venv", "node_modules", ".pytest_cache"}
 
 TEXT_EXTENSIONS = {
@@ -133,6 +165,49 @@ def detect_mcp_servers(content: str) -> list[str]:
     return sorted(set(MCP_HINT.findall(content)))
 
 
+def detect_proper_noun_candidates(file_contents: dict[str, str], min_count: int = 3) -> list[dict]:
+    """Find capitalized tokens that recur across the skill prose.
+    Returns candidates with file occurrences for human review.
+    Heuristic — meant for the orchestrator to ask the user about, not auto-replace.
+    """
+    counts: dict[str, list[tuple[str, int]]] = {}
+    for rel, content in file_contents.items():
+        for match in PROPER_NOUN_RE.finditer(content):
+            token = match.group(0).strip()
+            if token in PROPER_NOUN_STOPWORDS:
+                continue
+            # skip ALL-CAPS shorter than 4 chars (likely acronyms covered above)
+            if token.isupper() and len(token) < 4:
+                continue
+            line_no = content[: match.start()].count("\n") + 1
+            counts.setdefault(token, []).append((rel, line_no))
+
+    candidates = []
+    for token, occurrences in counts.items():
+        if len(occurrences) >= min_count:
+            candidates.append({
+                "token": token,
+                "count": len(occurrences),
+                "files": sorted({o[0] for o in occurrences}),
+                "first_occurrence": {"file": occurrences[0][0], "line": occurrences[0][1]},
+            })
+    candidates.sort(key=lambda c: -c["count"])
+    return candidates
+
+
+def detect_skill_name_references(skill_name: str, file_contents: dict[str, str]) -> list[dict]:
+    """Find places where the skill folder name appears in content.
+    These are renaming candidates when the adopter wants to rebrand the skill.
+    """
+    findings = []
+    pattern = re.compile(re.escape(skill_name))
+    for rel, content in file_contents.items():
+        for match in pattern.finditer(content):
+            line_no = content[: match.start()].count("\n") + 1
+            findings.append({"file": rel, "line": line_no, "value": skill_name})
+    return findings
+
+
 def parse_requirements(skill_path: Path) -> list[str]:
     deps = []
     for req_file in skill_path.rglob("requirements.txt"):
@@ -173,6 +248,7 @@ def analyze_skill(skill_path: Path) -> dict:
     fs_writes = []
     tools = set()
     mcp_servers = set()
+    file_contents: dict[str, str] = {}
 
     for f in files:
         if not is_text_file(f):
@@ -182,11 +258,15 @@ def analyze_skill(skill_path: Path) -> dict:
         except Exception:
             continue
         rel = str(f.relative_to(skill_path))
+        file_contents[rel] = content
         author_paths.extend(detect_author_paths(content, rel))
         network.extend(detect_network(content, rel))
         fs_writes.extend(detect_filesystem_writes(content, rel))
         tools.update(detect_external_tools(content, rel))
         mcp_servers.update(detect_mcp_servers(content))
+
+    proper_noun_candidates = detect_proper_noun_candidates(file_contents)
+    skill_name_refs = detect_skill_name_references(skill_path.name, file_contents)
 
     return {
         "skill_path": str(skill_path),
@@ -194,6 +274,8 @@ def analyze_skill(skill_path: Path) -> dict:
         "metadata": extract_skill_metadata(skill_path),
         "files": relative_files,
         "author_specific_paths": author_paths,
+        "proper_noun_candidates": proper_noun_candidates,
+        "skill_name_references": skill_name_refs,
         "network_indicators": network,
         "filesystem_write_indicators": fs_writes,
         "external_tools": sorted(tools),
@@ -243,6 +325,11 @@ def main() -> int:
     print(f"skill: {analysis['skill_name']}")
     print(f"files: {len(analysis['files'])}")
     print(f"author-specific path indicators: {len(analysis['author_specific_paths'])}")
+    print(f"skill-name references in content: {len(analysis['skill_name_references'])}")
+    print(f"proper-noun candidates (>=3 occurrences): {len(analysis['proper_noun_candidates'])}")
+    if analysis["proper_noun_candidates"]:
+        top = ", ".join(f"{c['token']}({c['count']})" for c in analysis["proper_noun_candidates"][:5])
+        print(f"  top: {top}")
     print(f"network indicators: {len(analysis['network_indicators'])}")
     print(f"filesystem-write indicators: {len(analysis['filesystem_write_indicators'])}")
     print(f"external tools: {', '.join(analysis['external_tools']) or 'none detected'}")

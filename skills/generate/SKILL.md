@@ -41,15 +41,20 @@ Given a target skill (by name in `~/.claude/skills/` or by absolute path):
 
 1. Resolve the target skill path
 2. Run `scripts/analyze_skill.py <path> --output /tmp/analysis.json` to produce structured analysis
-3. Review the analysis with the user, ask for confirmations on ambiguous detections (brand mentions, edge-case paths)
-4. Run `scripts/sanitize_skill.py <path> <skill>_shared --analysis /tmp/analysis.json [--sanitize]` FIRST — this creates the sibling folder and copies the skill with `# TODO_ADAPT:` markers. It refuses to run if the folder already exists.
+3. **Review the analysis WITH THE USER and ask for confirmations BEFORE sanitizing**:
+   - **Skill rename**: if the skill name embeds an author-specific prefix (e.g. `mt-` for "Max Turazzini"), propose a generic rename and ask. The new name will be applied via `--rename-to`.
+   - **Proper-noun candidates** (`proper_noun_candidates` in the analysis): each is a capitalized token recurring ≥3 times across files. Typical hits: author's first name, collaborator names, internal product/brand names. For each high-frequency candidate, ask the user what to replace it with (e.g. `Max → Utente`, `Massimiliano → me`) or whether to keep it. Build a list of `--replace KEY=VALUE` flags from the answers.
+   - **Author-specific files**: scan the file list for templates/scripts whose name or content suggests they only make sense in the author's workflow (e.g. a template that references a private project, an integration with a personal automation). Propose excluding them via `--exclude <glob>`.
+   - **Path detections**: confirm whether to apply `${PLACEHOLDER}` substitution (`--sanitize`).
+4. Run `scripts/sanitize_skill.py <path> <skill>_shared --analysis /tmp/analysis.json [--rename-to NEW_NAME] [--replace KEY=VALUE]... [--exclude GLOB]... [--sanitize]` FIRST — this creates the sibling folder and copies the skill with `# TODO_ADAPT:` markers and the requested transformations. It refuses to run if the folder already exists.
 5. Run `scripts/generate_shareme.py --analysis /tmp/analysis.json --template ../../TEMPLATE.md --output <skill>_shared/SHAREME.md` to write the generated SHAREME.md INTO the just-created folder
 6. Show the user the output folder structure and the first 30 lines of the generated `SHAREME.md`
 7. Remind the user that they MUST review and edit the generated SHAREME before sharing — automation is a starting point, not a finished product
 
 ## Operational notes
 
-- Author-specific detection is heuristic. Always confirm with the user before tagging brand names, product names, or domain-specific terms.
+- **Heuristic detection requires user confirmation**: proper-noun candidates and exclusion suggestions are guesses. Never apply `--replace` or `--exclude` without asking. The user knows which "Max" is a person and which "MAX" is the brand.
+- **`--rename-to` only changes content**, not the target folder name. The target folder name comes from the second positional argument to `sanitize_skill.py`. Typically pass the same string to both (e.g. `target=/path/to/aimax-foo_shared` and `--rename-to aimax-foo`).
 - The `--sanitize` flag is destructive within the copy folder (the original is still untouched). Use it only when the goal is a fully depersonalized export.
 - The skill reads `../../TEMPLATE.md`, `../../SPEC.md`, `../../CONVENTIONS.md` from the plugin root. These are the source of truth.
 - See `references/shareme-workflow.md` for full operational details.

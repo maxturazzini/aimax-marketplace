@@ -104,16 +104,66 @@ def apply_placeholders(file_path: Path, paths: list[dict]) -> None:
     file_path.write_text(content, encoding="utf-8")
 
 
-def copy_skill(source: Path, target: Path) -> None:
+def copy_skill(source: Path, target: Path, exclude_globs: list[str]) -> None:
     if target.exists():
         raise FileExistsError(f"target already exists: {target}")
-    shutil.copytree(source, target, ignore=shutil.ignore_patterns(
+    ignore_patterns = list(exclude_globs) + [
         "__pycache__", ".pytest_cache", ".venv", "venv", "*.pyc",
-    ))
+    ]
+    shutil.copytree(source, target, ignore=shutil.ignore_patterns(*ignore_patterns))
 
 
-def sanitize(source: Path, target: Path, analysis: dict, do_replace: bool) -> None:
-    copy_skill(source, target)
+def apply_text_replacements(file_path: Path, replacements: list[tuple[str, str]]) -> int:
+    """Replace literal strings inside a file. Returns number of files touched."""
+    if not replacements:
+        return 0
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except Exception:
+        return 0
+    original = content
+    # Sort by descending length so longer keys win (e.g., "Massimiliano" before "Massimi").
+    for key, value in sorted(replacements, key=lambda r: -len(r[0])):
+        if not key:
+            continue
+        content = content.replace(key, value)
+    if content != original:
+        file_path.write_text(content, encoding="utf-8")
+        return 1
+    return 0
+
+
+def sanitize(
+    source: Path,
+    target: Path,
+    analysis: dict,
+    do_replace: bool,
+    rename_to: str | None,
+    text_replacements: list[tuple[str, str]],
+    exclude_globs: list[str],
+) -> None:
+    copy_skill(source, target, exclude_globs)
+
+    # Rename references to the original skill folder name inside content.
+    # Touches frontmatter `name:` and inline path references like
+    # `.claude/skills/<old-name>/...`.
+    original_skill_name = analysis.get("skill_name") or source.name
+    rename_replacements: list[tuple[str, str]] = []
+    if rename_to and rename_to != original_skill_name:
+        rename_replacements.append((original_skill_name, rename_to))
+
+    all_text_replacements = rename_replacements + list(text_replacements)
+
+    if all_text_replacements:
+        for path in target.rglob("*"):
+            if not path.is_file():
+                continue
+            ext = path.suffix.lower()
+            if ext and ext not in COMMENT_BY_EXT and ext not in {
+                ".txt", ".yaml", ".yml", ".json", ".toml", ".cfg", ".ini",
+            }:
+                continue
+            apply_text_replacements(path, all_text_replacements)
 
     paths = analysis.get("author_specific_paths", [])
     by_file: dict[str, list[dict]] = defaultdict(list)
@@ -133,6 +183,25 @@ def sanitize(source: Path, target: Path, analysis: dict, do_replace: bool) -> No
 
         if do_replace:
             apply_placeholders(copied, file_paths)
+
+    # Surface proper-noun candidates as TODO_ADAPT markers at first occurrence,
+    # so the adopter sees them even if they did not pass --replace.
+    for candidate in analysis.get("proper_noun_candidates", []):
+        token = candidate["token"]
+        # Skip if the user already provided a replacement for this token.
+        if any(key == token for key, _ in text_replacements):
+            continue
+        first = candidate.get("first_occurrence") or {}
+        rel_file = first.get("file")
+        line_no = first.get("line")
+        if not rel_file or not line_no:
+            continue
+        copied = target / rel_file
+        if not copied.exists():
+            continue
+        insert_markers(copied, [
+            (line_no, f"proper-noun candidate '{token}' appears {candidate['count']}x — confirm before sharing"),
+        ])
 
 
 def main() -> int:
@@ -157,7 +226,33 @@ def main() -> int:
         action="store_true",
         help="Also replace detected author-specific paths with ${PLACEHOLDER} syntax",
     )
+    parser.add_argument(
+        "--rename-to",
+        help="Rename the skill: replace original folder name with this string in all text content (frontmatter, paths). The target folder name still comes from the `target` argument.",
+    )
+    parser.add_argument(
+        "--replace",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
+        help="Literal string replacement applied to all text files. Repeat the flag for multiple replacements (e.g. --replace Max=Utente --replace Massimiliano=l'utente).",
+    )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="GLOB",
+        help="Skip files matching this glob when copying (e.g. --exclude '7-*.md'). Repeatable.",
+    )
     args = parser.parse_args()
+
+    text_replacements: list[tuple[str, str]] = []
+    for item in args.replace:
+        if "=" not in item:
+            print(f"error: --replace expects KEY=VALUE, got: {item}", file=sys.stderr)
+            return 2
+        key, _, value = item.partition("=")
+        text_replacements.append((key, value))
 
     source = Path(args.skill_path).expanduser().resolve()
     target = Path(args.target).expanduser().resolve()
@@ -173,7 +268,15 @@ def main() -> int:
     analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
 
     try:
-        sanitize(source, target, analysis, args.sanitize)
+        sanitize(
+            source,
+            target,
+            analysis,
+            args.sanitize,
+            rename_to=args.rename_to,
+            text_replacements=text_replacements,
+            exclude_globs=args.exclude,
+        )
     except FileExistsError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 3
