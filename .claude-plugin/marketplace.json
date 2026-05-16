@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "shareme",
-  "description": "Standard and skill for adopting Claude Code skills consciously. Generates SHAREME.md companion docs explaining what a skill does, what it touches, and how to adapt it.",
+  "name": "aimax-skills",
+  "description": "AIMAX skills marketplace — a growing collection of Claude Code plugins by Max Turazzini. Add the marketplace once, install plugins on demand.",
   "owner": {
     "name": "Max Turazzini",
     "url": "https://github.com/maxturazzini"
@@ -15,9 +15,9 @@
         "name": "Max Turazzini",
         "url": "https://github.com/maxturazzini"
       },
-      "source": "./",
+      "source": "./plugins/shareme",
       "category": "developer-tools",
-      "homepage": "https://github.com/maxturazzini/shareme",
+      "homepage": "https://github.com/maxturazzini/aimax-skills/tree/main/plugins/shareme",
       "license": "MIT"
     }
   ]

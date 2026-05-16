@@ -1,62 +1,46 @@
-# Contributor instructions
+# Contributor instructions — aimax-skills marketplace
 
-This file is read by Claude Code when working inside this repository (e.g., for fixes, enhancements, or PR review). It is NOT the documentation for users installing the plugin — that lives in [README.md](README.md).
+This repo is a **Claude Code marketplace**, not a single plugin. Users register the marketplace once (`claude plugin marketplace add maxturazzini/aimax-skills`) and then install any plugin from it.
 
-## Repository purpose
-
-`shareme` is two things in one repo:
-
-1. **A standard** (`SPEC.md`, `TEMPLATE.md`, `CONVENTIONS.md`) that defines what a SHAREME-compliant companion document looks like
-2. **A Claude Code plugin** (`skills/generate/`) that produces SHAREME.md drafts for any target skill
-
-When making changes, keep the two layers consistent. If you change the spec, update the dogfood `skills/generate/SHAREME.md` and the synthetic `examples/example-shareme.md` to match.
-
-## Project structure
+## Layout
 
 ```
-.claude-plugin/plugin.json    Plugin manifest (name, version, repo)
-SPEC.md                       Standard formal specification
-TEMPLATE.md                   Boilerplate to copy
-CONVENTIONS.md                Placeholder syntax, adapt markers, tone
-README.md                     User-facing install + usage docs
-examples/                     Synthetic SHAREME examples
-skills/generate/              The /shareme:generate skill
-  SKILL.md                    Trigger description for Claude Code
-  SHAREME.md                  Dogfooding (keep in sync with TEMPLATE.md)
-  scripts/                    Python implementation (stdlib only)
-  references/                 Operational notes for Claude when invoking the skill
+.claude-plugin/marketplace.json   Marketplace catalog (name, plugins[])
+README.md                          Marketplace-level docs (this is the entry point)
+LICENSE                            Repo-wide license (plugins may override)
+plugins/
+  <plugin-name>/
+    .claude-plugin/plugin.json   Plugin manifest
+    README.md                     Plugin-specific docs
+    CLAUDE.md                     Plugin-specific contributor notes (if any)
+    SKILL files, scripts, etc.
 ```
+
+## Adding a new plugin
+
+1. Create `plugins/<plugin-name>/` and put the plugin source inside (including its own `.claude-plugin/plugin.json`).
+2. Add an entry to `.claude-plugin/marketplace.json` under `plugins[]` with `"source": "./plugins/<plugin-name>"`.
+3. Add a row to the **Plugins** table in the root `README.md`.
+4. Commit and push. Users get the new plugin after `claude plugin marketplace update aimax-skills`.
 
 ## Invariants
 
-When changing code, do not break these:
+- **Marketplace name is `aimax-skills`** in `marketplace.json` and in all install instructions. The plugin name lives inside `plugins[].name` and is independent.
+- **Each plugin is self-contained** in its `plugins/<name>/` folder. Plugin internals (paths, scripts) must use paths relative to the plugin folder, not the repo root.
+- **Per-plugin contributor notes** live in `plugins/<name>/CLAUDE.md` and `plugins/<name>/README.md`. Do not promote plugin-specific details into root files.
 
-1. **The original skill is never modified.** `sanitize_skill.py` produces a sibling folder. If a change introduces any write to the source path, it is a bug.
-2. **Workflow order**: `analyze` → `sanitize` → `generate`. `sanitize` MUST run before `generate` because it creates the destination folder; `generate` writes into it. Both `SKILL.md` and `references/shareme-workflow.md` document this order — keep them in sync.
-3. **Stdlib only**: `scripts/` must run on Python 3.11+ standard library. No third-party deps. `requirements.txt` is reserved for future needs but currently empty.
-4. **Spec coherence**: any new required section in `SPEC.md` must also appear in `TEMPLATE.md`, in `examples/example-shareme.md`, and in `skills/generate/SHAREME.md`.
+## THE SHAREME CONTRACT — most important rule
 
-## Validate after changes
+Every plugin in this marketplace, **except `shareme` itself**, must satisfy this contract. No exceptions. If a plugin doesn't meet all three points, it does not belong here.
 
-Before committing, dogfood the skill on itself:
+1. **Works out of the box.** Installing the plugin with defaults must produce a functioning skill. No "edit before first run" is allowed. Real plug & play, not plug & pray.
+2. **Ships with a `SHAREME.md` companion** next to its `SKILL.md` (or equivalent entry point), following the [SHAREME spec](plugins/shareme/SPEC.md). The companion documents what the plugin does behind the scenes, what's author-specific, and what an adopter would want to change to make it theirs.
+3. **Carries `# TODO_ADAPT:` markers** in the source at every author-specific point — paths, brand voice, named entities, defaults that depend on the author's setup. Adapting must be search-and-replace, not forensic reading.
 
-```bash
-python3 skills/generate/scripts/analyze_skill.py skills/generate --output /tmp/self.json
-rm -rf /tmp/generate_shared
-python3 skills/generate/scripts/sanitize_skill.py skills/generate /tmp/generate_shared --analysis /tmp/self.json --sanitize
-python3 skills/generate/scripts/generate_shareme.py --analysis /tmp/self.json --template TEMPLATE.md --output /tmp/generate_shared/SHAREME.md
-diff /tmp/generate_shared/SHAREME.md skills/generate/SHAREME.md  # expect prose-heavy sections to differ; structure should match
-```
+To produce a compliant SHAREME and place the markers automatically, run `/shareme:generate` (the plugin in this marketplace) against your plugin folder before adding it to `plugins/`. Then edit the prose-heavy SHAREME sections by hand.
 
-If the structure of the generated file no longer matches the dogfood, either the template or the dogfood drifted — fix the inconsistency before committing.
+**`shareme` is the exception** because it's the meta-tool that enforces this contract for the others. By design, `shareme` itself is **hard** — minimal customization surface, no brand voice, no environment-specific defaults — because a rigid tool is what makes the rest of the marketplace soft and adaptable. Do not "soften" `shareme` to make it more personal; that would defeat its purpose.
 
 ## Commit identity
 
 This repo uses identity `maxturazzini / max@turazzini.com` for commits. Verify with `git config user.name` before committing if in doubt. Do not change global git config — set it locally for this repo.
-
-## Out of scope (for now)
-
-- Windows path detection (only macOS / Linux paths are detected today)
-- Secret scanning (use a dedicated tool — `gitleaks`, `trufflehog`)
-- LLM-assisted prose generation (sections 2, 6, 7 of the SHAREME are intentionally left as `<TODO: ...>` for human input)
-- Multi-skill batch processing

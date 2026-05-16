@@ -1,125 +1,68 @@
-# SHAREME
+# aimax-skills
 
-**A standard for sharing Claude Code skills consciously.**
+**Claude Code marketplace by Max Turazzini.** Add the marketplace once, install plugins on demand, get updates as new ones land.
 
-Installing a skill from someone else's environment without reading what it does is reckless. Even when a skill has no obvious customizations, it still does things. It writes files, makes network calls, depends on tools, assumes runtimes. The adopter has the right and the duty to know **what** before deciding **whether**.
+## The plug & play contract
 
-`SHAREME.md` is a companion file that lives next to a skill's `SKILL.md` and answers, in five minutes of reading, the questions that should never be skipped.
+A plugin written by someone else carries three things into your environment, not one:
 
-> Skills are adopted, not magically installed. Unless you enjoy risking your context window.
+1. **Their setup** — paths, brand voice, tool choices, file conventions.
+2. **Their way of thinking** — the framing they imposed on the problem, the defaults they considered obvious, the trade-offs they made without writing them down.
+3. **The slop of the AI that helped write it.** Most plugins in circulation today are largely auto-generated. Whatever quirks, verbosity, and assumptions the model carried at generation time are baked in — and drift further with every iteration unless someone reins them in.
 
-## What you get
+The honest verb for ignoring all three and just running the thing is **`plug & pray`**. Not a verb you want in a working session.
 
-This repository contains:
+So every plugin in `aimax-skills` is held to a contract:
 
-1. **The standard** — [`SPEC.md`](SPEC.md) defines the eleven sections every SHAREME.md must include.
-2. **A boilerplate** — [`TEMPLATE.md`](TEMPLATE.md) you can copy and fill in for your own skill.
-3. **Conventions** — [`CONVENTIONS.md`](CONVENTIONS.md) for placeholders, adapt markers, naming, tone.
-4. **A working example** — [`examples/example-shareme.md`](examples/example-shareme.md).
-5. **A Claude Code skill** — `/shareme:generate`, which produces a SHAREME-compliant copy of any skill you point it at.
+- **Works out of the box** with sensible defaults — real plug & play, not plug & pray.
+- **Ships with a `SHAREME.md` companion** that names, in 5 minutes of reading, what the plugin does behind the scenes, what's author-specific, and what you'd want to change to make it yours.
+- **Carries `# TODO_ADAPT:` markers** in the source at every author-specific point, so adapting is a search, not a forensic read.
 
-## Install
+> Use it as-is. Then adapt when you're ready.
 
-Claude Code installs plugins from **marketplaces**. This repo is itself a single-plugin marketplace, so installation is two shell commands:
+**The fun part:** [`shareme`](plugins/shareme/) — the plugin that produces companions and markers for everything else — is deliberately **hard**. Minimal customization surface, generic by design. The one rigid tool is what lets every other skill in this marketplace be soft.
 
-```bash
-# 1. Register this repo as a marketplace
-claude plugin marketplace add maxturazzini/shareme
-
-# 2. Install the plugin from it
-claude plugin install shareme@shareme
-```
-
-The first command clones the repo into `~/.claude/plugins/marketplaces/shareme/`. The second installs the plugin defined inside it. The skill becomes available as `/shareme:generate` in any Claude Code session.
-
-### Verify
+## Install the marketplace
 
 ```bash
-claude plugin list
+claude plugin marketplace add maxturazzini/aimax-skills
 ```
 
-You should see `shareme` in the output. In a Claude Code session, typing `/shareme:` should suggest `generate` as available.
+This registers the repo as a marketplace. You only do it once.
 
-### Update later
+## Browse and install plugins
 
 ```bash
-claude plugin marketplace update shareme   # pulls latest changes
-claude plugin update shareme                # applies them (restart required)
+claude plugin marketplace browse aimax-skills      # list available plugins
+claude plugin install <plugin-name>@aimax-skills   # install a specific one
 ```
 
-### Uninstall
+## Plugins
+
+| Plugin | What it does |
+|---|---|
+| [`shareme`](plugins/shareme/) | Generates SHAREME.md companion documentation for any Claude Code skill — the standard for adopting skills consciously. |
+
+_More to come. The marketplace grows over time; run `claude plugin marketplace update aimax-skills` to see new additions._
+
+## Update
 
 ```bash
-claude plugin uninstall shareme
-claude plugin marketplace remove shareme
+claude plugin marketplace update aimax-skills   # refresh the marketplace catalog
+claude plugin update <plugin-name>              # update a specific installed plugin
 ```
 
-### Try it without installing (development / one-shot)
-
-To test a local clone or a fork without going through the marketplace:
+## Try a plugin without installing
 
 ```bash
-git clone https://github.com/maxturazzini/shareme.git
-claude --plugin-dir ./shareme
+git clone https://github.com/maxturazzini/aimax-skills.git
+claude --plugin-dir ./aimax-skills/plugins/<plugin-name>
 ```
-
-The plugin is loaded for that single Claude Code session only.
-
-## Use
-
-In a Claude Code conversation, ask in plain language:
-
-> "Prepare my `weather-bot` skill for sharing — generate a SHAREME for it."
-
-Or invoke the skill directly:
-
-```
-/shareme:generate weather-bot
-```
-
-Or pass an absolute path if your skills don't live in `~/.claude/skills/`:
-
-```
-/shareme:generate path:/Users/me/projects/my-skill
-```
-
-Add `--sanitize` to also replace detected author-specific values with `${PLACEHOLDER}` syntax in the copy:
-
-```
-/shareme:generate weather-bot --sanitize
-```
-
-### What happens
-
-The skill creates a sibling folder `weather-bot_shared/` next to the original, containing:
-- A copy of the skill with `# TODO_ADAPT:` markers placed at author-specific points
-- A generated `SHAREME.md` following the standard, pre-filled with detected facts
-- (with `--sanitize`) author-specific values replaced with `${PLACEHOLDER}` syntax
-
-The original skill is never modified.
-
-You then **review and edit** the generated SHAREME — automation gives you a draft, not a finished doc.
-
-## Adopt a skill yourself
-
-When you want to install a skill someone else wrote:
-
-1. Look for a `SHAREME.md` in the skill folder. If it is missing, ask the author to add one (or run `/shareme:generate` on it yourself).
-2. Read sections 4 (behind the scenes) and 9 (cyber warnings) first. Decide whether you are willing to run what the skill does.
-3. Read section 5 (author-specific) to understand what you'll need to change.
-4. Answer section 7 (onboarding questions) honestly.
-5. Then, and only then, adapt and install.
-
-## Why this exists
-
-Every skill I write is shaped by my workspace, my brand, my paths, my corner cases. A skill that works perfectly for me might fail loudly — or worse, silently — in your environment. Or it might do something you didn't expect and didn't want.
-
-Copy-pasting it into your `~/.claude/` folder skips the part where you decide whether the skill fits your problem at all. SHAREME makes that decision visible, structured, and unavoidable.
-
-## Status
-
-**v0.1.0** — early draft. The spec is open to feedback. Open an issue if you have one.
 
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
+
+You can fork, modify, redistribute, and use this commercially. The only requirement: **keep the copyright notice** (`Copyright (c) 2026 Max Turazzini`) in your copies or derivatives. Attribution is the price; everything else is yours.
+
+Individual plugins may declare their own license in their manifest.
