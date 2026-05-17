@@ -1,4 +1,4 @@
-# Internal workflow reference for `/shareme:generate`
+# Internal workflow reference for `/shareme:wrap`
 
 This document is for Claude when invoking the skill. It captures the operational
 sequence and the judgment calls expected during execution.
@@ -7,9 +7,9 @@ sequence and the judgment calls expected during execution.
 
 The user invokes one of:
 
-- `/shareme:generate <skill-name>`
-- `/shareme:generate path:/abs/path/to/skill`
-- `/shareme:generate <skill-name> --sanitize`
+- `/shareme:wrap <skill-name>`
+- `/shareme:wrap path:/abs/path/to/skill`
+- `/shareme:wrap <skill-name> --sanitize`
 
 ## Resolution
 
@@ -18,7 +18,7 @@ The user invokes one of:
 
 ## Plugin paths
 
-The skill lives at `<plugin_root>/skills/generate/`. The standard files are at the plugin root:
+The skill lives at `<plugin_root>/skills/wrap/`. The standard files are at the plugin root:
 
 - `<plugin_root>/SPEC.md`
 - `<plugin_root>/TEMPLATE.md`
@@ -33,7 +33,7 @@ Relative path from the skill scripts folder: `../../`. Use the absolute path whe
 2. **Analyze**: run
 
    ```
-   python <plugin_root>/skills/generate/scripts/analyze_skill.py <target_path> --output <tmp>/analysis.json
+   python <plugin_root>/skills/wrap/scripts/analyze_skill.py <target_path> --output <tmp>/analysis.json
    ```
 
 3. **Review with user**: read the analysis output and walk the user through:
@@ -47,7 +47,7 @@ Relative path from the skill scripts folder: `../../`. Use the absolute path whe
 4. **Copy and mark FIRST**: `sanitize_skill.py` creates the sibling folder and copies the skill files with markers. It refuses to run if the target folder already exists, so it must run before any other script writes there.
 
    ```
-   python <plugin_root>/skills/generate/scripts/sanitize_skill.py \
+   python <plugin_root>/skills/wrap/scripts/sanitize_skill.py \
        <target_path> <target_parent>/<target_name>_shared \
        --analysis <tmp>/analysis.json [--sanitize]
    ```
@@ -55,7 +55,7 @@ Relative path from the skill scripts folder: `../../`. Use the absolute path whe
 5. **Generate SHAREME.md INSIDE the new folder**: now that the folder exists, write SHAREME.md into it.
 
    ```
-   python <plugin_root>/skills/generate/scripts/generate_shareme.py \
+   python <plugin_root>/skills/wrap/scripts/generate_shareme.py \
        --analysis <tmp>/analysis.json \
        --template <plugin_root>/TEMPLATE.md \
        --output <target_parent>/<target_name>_shared/SHAREME.md

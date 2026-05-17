@@ -1,4 +1,4 @@
-# SHAREME — `generate`
+# SHAREME — `wrap`
 
 > Companion document to `SKILL.md`. Read this **before** installing or running the skill.
 >

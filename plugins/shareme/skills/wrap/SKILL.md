@@ -1,9 +1,9 @@
 ---
-name: generate
-description: Generates a SHAREME-compliant companion document for a Claude Code skill. Produces a sibling folder named `<skill-name>_shared/` containing a copy of the skill with `# TODO_ADAPT:` markers and a `SHAREME.md` following the standard at github.com/maxturazzini/shareme. Use this skill whenever the user wants to share, publish, distribute, or document a Claude Code skill they authored. Trigger keywords - "make this skill shareable", "generate SHAREME", "prepare skill for sharing", "document skill for adoption", "create companion doc", "/shareme:generate".
+name: wrap
+description: Wraps a Claude Code skill into a SHAREME-compliant adoption package. Produces a sibling folder named `<skill-name>_shared/` containing a copy of the skill with `# TODO_ADAPT:` markers and a `SHAREME.md` following the standard at github.com/maxturazzini/shareme. Use this skill whenever the user wants to share, publish, distribute, or document a Claude Code skill they authored. Trigger keywords - "make this skill shareable", "wrap skill for sharing", "prepare skill for sharing", "document skill for adoption", "create companion doc", "/shareme:wrap".
 ---
 
-# /shareme:generate
+# /shareme:wrap
 
 Produce a SHAREME-compliant adoption package for any Claude Code skill.
 
@@ -33,9 +33,9 @@ Given a target skill (by name in `~/.claude/skills/` or by absolute path):
 
 ## Triggers
 
-- `/shareme:generate <skill-name>` — operates on `~/.claude/skills/<skill-name>/`
-- `/shareme:generate path:/abs/path/to/skill` — operates on an arbitrary path
-- `/shareme:generate <skill-name> --sanitize` — also replaces author-specific values in the copy with `${PLACEHOLDER}` syntax
+- `/shareme:wrap <skill-name>` — operates on `~/.claude/skills/<skill-name>/`
+- `/shareme:wrap path:/abs/path/to/skill` — operates on an arbitrary path
+- `/shareme:wrap <skill-name> --sanitize` — also replaces author-specific values in the copy with `${PLACEHOLDER}` syntax
 
 ## Workflow when invoked
 

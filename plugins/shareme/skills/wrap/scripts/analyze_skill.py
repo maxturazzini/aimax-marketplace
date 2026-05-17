@@ -2,7 +2,7 @@
 """Analyze a Claude Code skill and emit structured JSON describing
 its capabilities, dependencies, side effects, and author-specific bits.
 
-Used by /shareme:generate to feed generate_shareme.py and sanitize_skill.py.
+Used by /shareme:wrap to feed generate_shareme.py and sanitize_skill.py.
 """
 
 from __future__ import annotations

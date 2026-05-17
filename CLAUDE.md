@@ -37,7 +37,7 @@ Every plugin in this marketplace, **except `shareme` itself**, must satisfy this
 2. **Ships with a `SHAREME.md` companion** next to its `SKILL.md` (or equivalent entry point), following the [SHAREME spec](plugins/shareme/SPEC.md). The companion documents what the plugin does behind the scenes, what's author-specific, and what an adopter would want to change to make it theirs.
 3. **Carries `# TODO_ADAPT:` markers** in the source at every author-specific point — paths, brand voice, named entities, defaults that depend on the author's setup. Adapting must be search-and-replace, not forensic reading.
 
-To produce a compliant SHAREME and place the markers automatically, run `/shareme:generate` (the plugin in this marketplace) against your plugin folder before adding it to `plugins/`. Then edit the prose-heavy SHAREME sections by hand.
+To produce a compliant SHAREME and place the markers automatically, run `/shareme:wrap` (the plugin in this marketplace) against your plugin folder before adding it to `plugins/`. Then edit the prose-heavy SHAREME sections by hand.
 
 **`shareme` is the exception** because it's the meta-tool that enforces this contract for the others. By design, `shareme` itself is **hard** — minimal customization surface, no brand voice, no environment-specific defaults — because a rigid tool is what makes the rest of the marketplace soft and adaptable. Do not "soften" `shareme` to make it more personal; that would defeat its purpose.
 
