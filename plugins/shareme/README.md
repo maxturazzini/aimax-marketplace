@@ -26,17 +26,17 @@ This repository contains:
 
 ## Install
 
-`shareme` lives inside the **aimax-skills** marketplace. You register the marketplace once, then install any plugin from it on demand:
+`shareme` lives inside the **aimax-marketplace** marketplace. You register the marketplace once, then install any plugin from it on demand:
 
 ```bash
 # 1. Register the marketplace (once)
-claude plugin marketplace add maxturazzini/aimax-skills
+claude plugin marketplace add maxturazzini/aimax-marketplace
 
 # 2. Install the shareme plugin from it
-claude plugin install shareme@aimax-skills
+claude plugin install shareme@aimax-marketplace
 ```
 
-The first command clones the marketplace repo into `~/.claude/plugins/marketplaces/aimax-skills/`. The second installs `shareme`. Both skills — `/shareme:wrap` and `/shareme:unwrap` — become available in any Claude Code session.
+The first command clones the marketplace repo into `~/.claude/plugins/marketplaces/aimax-marketplace/`. The second installs `shareme`. Both skills — `/shareme:wrap` and `/shareme:unwrap` — become available in any Claude Code session.
 
 ### Verify
 
@@ -49,7 +49,7 @@ You should see `shareme` in the output. In a Claude Code session, typing `/share
 ### Update later
 
 ```bash
-claude plugin marketplace update aimax-skills   # pulls latest changes (also shows newly added plugins)
+claude plugin marketplace update aimax-marketplace   # pulls latest changes (also shows newly added plugins)
 claude plugin update shareme                     # applies updates to shareme (restart required)
 ```
 
@@ -57,8 +57,8 @@ claude plugin update shareme                     # applies updates to shareme (r
 
 ```bash
 claude plugin uninstall shareme
-# (leave the marketplace registered if you have other aimax-skills plugins installed)
-claude plugin marketplace remove aimax-skills
+# (leave the marketplace registered if you have other aimax-marketplace plugins installed)
+claude plugin marketplace remove aimax-marketplace
 ```
 
 ### Try it without installing (development / one-shot)
@@ -66,8 +66,8 @@ claude plugin marketplace remove aimax-skills
 To test a local clone or a fork without going through the marketplace:
 
 ```bash
-git clone https://github.com/maxturazzini/aimax-skills.git
-claude --plugin-dir ./aimax-skills/plugins/shareme
+git clone https://github.com/maxturazzini/aimax-marketplace.git
+claude --plugin-dir ./aimax-marketplace/plugins/shareme
 ```
 
 The plugin is loaded for that single Claude Code session only.
@@ -162,7 +162,7 @@ Copy-pasting it into your `~/.claude/` folder skips the part where you decide wh
 
 ## Status
 
-**v0.1.0 — Initial release** (first public, tagged version). The standard is usable as-is. `/shareme:wrap` is fully functional. `/shareme:unwrap` ships at design + docs level — the SKILL.md, SHAREME.md, and operational reference are in place; scripts (security review subprocess, marker resolution, install) follow in a later phase. The surface is intentionally small while the spec stabilises toward v1.0. Feedback is welcome — please [open an issue](https://github.com/maxturazzini/aimax-skills/issues) for bugs, gaps, or proposals.
+**v0.1.0 — Initial release** (first public, tagged version). The standard is usable as-is. `/shareme:wrap` is fully functional. `/shareme:unwrap` ships at design + docs level — the SKILL.md, SHAREME.md, and operational reference are in place; scripts (security review subprocess, marker resolution, install) follow in a later phase. The surface is intentionally small while the spec stabilises toward v1.0. Feedback is welcome — please [open an issue](https://github.com/maxturazzini/aimax-marketplace/issues) for bugs, gaps, or proposals.
 
 ## License
 

@@ -107,8 +107,8 @@ Verify with: `/shareme:unwrap <path-to-some-skill>` (dry-run is the default) and
 
 - **License**: MIT (see [`LICENSE`](../../LICENSE))
 - **Warranty**: none. The security review is a tool, not a substitute for human judgment. The adopter decides.
-- **Attribution**: not required, appreciated. Link back to `github.com/maxturazzini/aimax-skills`.
-- **Contact**: open an issue at `github.com/maxturazzini/aimax-skills/issues`.
+- **Attribution**: not required, appreciated. Link back to `github.com/maxturazzini/aimax-marketplace`.
+- **Contact**: open an issue at `github.com/maxturazzini/aimax-marketplace/issues`.
 
 ---
 

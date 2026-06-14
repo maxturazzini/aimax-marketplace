@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "aimax-skills",
-  "description": "AIMAX skills marketplace — a growing collection of Claude Code plugins by Max Turazzini. Add the marketplace once, install plugins on demand.",
+  "name": "aimax-marketplace",
+  "description": "AI, MAX Plugins — il marketplace di plugin Claude Code di Max Turazzini. Aggiungi il marketplace una volta, installa i plugin quando servono.",
   "owner": {
     "name": "Max Turazzini",
     "url": "https://github.com/maxturazzini"
@@ -17,7 +17,7 @@
       },
       "source": "./plugins/shareme",
       "category": "developer-tools",
-      "homepage": "https://github.com/maxturazzini/aimax-skills/tree/main/plugins/shareme",
+      "homepage": "https://github.com/maxturazzini/aimax-marketplace/tree/main/plugins/shareme",
       "license": "MIT"
     },
     {
@@ -30,7 +30,7 @@
       },
       "source": "./plugins/valutazione-fv",
       "category": "education",
-      "homepage": "https://github.com/maxturazzini/aimax-skills/tree/main/plugins/valutazione-fv",
+      "homepage": "https://github.com/maxturazzini/aimax-marketplace/tree/main/plugins/valutazione-fv",
       "license": "CC-BY-NC-4.0"
     }
   ]

@@ -29,7 +29,7 @@ valutazione-fv/
 ## Installazione (Claude Code)
 
 ```
-/plugin marketplace add maxturazzini/aimax-skills
+/plugin marketplace add maxturazzini/aimax-marketplace
 /plugin install valutazione-fv
 ```
 

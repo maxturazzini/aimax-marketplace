@@ -1,5 +1,6 @@
 {
   "name": "valutazione-fv",
+  "displayName": "AI, MAX · Valutazione FV",
   "description": "Valutazione di fattibilità fotovoltaico per una sede aziendale: stima i mq netti dal rilievo, recupera la produzione reale via il connettore PVGIS, calcola payback e cash-flow con uno script di calcolo puro, produce una scheda per il comitato. Materiale didattico (workshop AI, MAX), non per decisioni reali.",
   "version": "0.1.0",
   "author": {
@@ -7,7 +8,7 @@
     "url": "https://github.com/maxturazzini"
   },
   "homepage": "https://maxturazzini.com",
-  "repository": "https://github.com/maxturazzini/aimax-skills",
+  "repository": "https://github.com/maxturazzini/aimax-marketplace",
   "license": "CC-BY-NC-4.0",
   "keywords": [
     "claude-code",

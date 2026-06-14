@@ -1,6 +1,6 @@
-# Contributor instructions — aimax-skills marketplace
+# Contributor instructions — aimax-marketplace marketplace
 
-This repo is a **Claude Code marketplace**, not a single plugin. Users register the marketplace once (`claude plugin marketplace add maxturazzini/aimax-skills`) and then install any plugin from it.
+This repo is a **Claude Code marketplace**, not a single plugin. Users register the marketplace once (`claude plugin marketplace add maxturazzini/aimax-marketplace`) and then install any plugin from it.
 
 ## Layout
 
@@ -21,11 +21,11 @@ plugins/
 1. Create `plugins/<plugin-name>/` and put the plugin source inside (including its own `.claude-plugin/plugin.json`).
 2. Add an entry to `.claude-plugin/marketplace.json` under `plugins[]` with `"source": "./plugins/<plugin-name>"`.
 3. Add a row to the **Plugins** table in the root `README.md`.
-4. Commit and push. Users get the new plugin after `claude plugin marketplace update aimax-skills`.
+4. Commit and push. Users get the new plugin after `claude plugin marketplace update aimax-marketplace`.
 
 ## Invariants
 
-- **Marketplace name is `aimax-skills`** in `marketplace.json` and in all install instructions. The plugin name lives inside `plugins[].name` and is independent.
+- **Marketplace name is `aimax-marketplace`** in `marketplace.json` and in all install instructions. The plugin name lives inside `plugins[].name` and is independent.
 - **Each plugin is self-contained** in its `plugins/<name>/` folder. Plugin internals (paths, scripts) must use paths relative to the plugin folder, not the repo root.
 - **Per-plugin contributor notes** live in `plugins/<name>/CLAUDE.md` and `plugins/<name>/README.md`. Do not promote plugin-specific details into root files.
 

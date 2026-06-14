@@ -2,7 +2,7 @@
 
 This file is read by Claude Code when working inside this plugin folder (e.g., for fixes, enhancements, or PR review). It is NOT the documentation for users installing the plugin — that lives in [README.md](README.md).
 
-> This plugin lives inside the **aimax-skills** marketplace at `plugins/shareme/`. Marketplace-wide conventions live in the repo-root [`CLAUDE.md`](../../CLAUDE.md). All paths in this file are relative to the plugin folder (`plugins/shareme/`), so run validation commands from here, not from the repo root.
+> This plugin lives inside the **aimax-marketplace** marketplace at `plugins/shareme/`. Marketplace-wide conventions live in the repo-root [`CLAUDE.md`](../../CLAUDE.md). All paths in this file are relative to the plugin folder (`plugins/shareme/`), so run validation commands from here, not from the repo root.
 
 ## Plugin purpose
 

@@ -1,4 +1,4 @@
-# aimax-skills
+# aimax-marketplace
 
 **Claude Code marketplace by Max Turazzini.** Add the marketplace once, install plugins on demand, get updates as new ones land.
 
@@ -12,7 +12,7 @@ A plugin written by someone else carries three things into your environment, not
 
 The honest verb for ignoring all three and just running the thing is **`plug & pray`**. Not a verb you want in a working session.
 
-So every plugin in `aimax-skills` is held to a contract:
+So every plugin in `aimax-marketplace` is held to a contract:
 
 - **Works out of the box** with sensible defaults — real plug & play, not plug & pray.
 - **Ships with a `SHAREME.md` companion** that names, in 5 minutes of reading, what the plugin does behind the scenes, what's author-specific, and what you'd want to change to make it yours.
@@ -25,7 +25,7 @@ So every plugin in `aimax-skills` is held to a contract:
 ## Install the marketplace
 
 ```bash
-claude plugin marketplace add maxturazzini/aimax-skills
+claude plugin marketplace add maxturazzini/aimax-marketplace
 ```
 
 This registers the repo as a marketplace. You only do it once.
@@ -33,8 +33,8 @@ This registers the repo as a marketplace. You only do it once.
 ## Browse and install plugins
 
 ```bash
-claude plugin marketplace browse aimax-skills      # list available plugins
-claude plugin install <plugin-name>@aimax-skills   # install a specific one
+claude plugin marketplace browse aimax-marketplace      # list available plugins
+claude plugin install <plugin-name>@aimax-marketplace   # install a specific one
 ```
 
 ## Plugins
@@ -43,20 +43,20 @@ claude plugin install <plugin-name>@aimax-skills   # install a specific one
 |---|---|
 | [`shareme`](plugins/shareme/) | Generates SHAREME.md companion documentation for any Claude Code skill — the standard for adopting skills consciously. |
 
-_More to come. The marketplace grows over time; run `claude plugin marketplace update aimax-skills` to see new additions._
+_More to come. The marketplace grows over time; run `claude plugin marketplace update aimax-marketplace` to see new additions._
 
 ## Update
 
 ```bash
-claude plugin marketplace update aimax-skills   # refresh the marketplace catalog
+claude plugin marketplace update aimax-marketplace   # refresh the marketplace catalog
 claude plugin update <plugin-name>              # update a specific installed plugin
 ```
 
 ## Try a plugin without installing
 
 ```bash
-git clone https://github.com/maxturazzini/aimax-skills.git
-claude --plugin-dir ./aimax-skills/plugins/<plugin-name>
+git clone https://github.com/maxturazzini/aimax-marketplace.git
+claude --plugin-dir ./aimax-marketplace/plugins/<plugin-name>
 ```
 
 ## License
