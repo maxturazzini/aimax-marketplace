@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pvgis": {
+      "type": "http",
+      "url": "https://pvgis-mcp.k76js8pfvm.workers.dev/mcp"
+    }
+  }
+}
