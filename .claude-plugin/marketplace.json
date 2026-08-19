@@ -32,6 +32,19 @@
       "category": "education",
       "homepage": "https://github.com/maxturazzini/aimax-marketplace/tree/main/plugins/valutazione-fv",
       "license": "CC-BY-NC-4.0"
+    },
+    {
+      "name": "modalita-fastidio",
+      "description": "Annoyance mode. A session-wide behavior mode for your assistant: make yourself understood, finish what was asked, act instead of asking permission, answer questions without implementing them, go fast, keep it short. An antidote to verbosity. Ships in Italian, English variant included.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Max Turazzini",
+        "url": "https://github.com/maxturazzini"
+      },
+      "source": "./plugins/modalita-fastidio",
+      "category": "workflow",
+      "homepage": "https://github.com/maxturazzini/aimax-marketplace/tree/main/plugins/modalita-fastidio",
+      "license": "MIT"
     }
   ]
 }

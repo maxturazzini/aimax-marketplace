@@ -42,6 +42,8 @@ claude plugin install <plugin-name>@aimax-marketplace   # install a specific one
 | Plugin | What it does |
 |---|---|
 | [`shareme`](plugins/shareme/) | Generates SHAREME.md companion documentation for any Claude Code skill — the standard for adopting skills consciously. |
+| [`modalita-fastidio`](plugins/modalita-fastidio/) | Annoyance mode. Flips your assistant into a shorter, faster, finish-what-was-asked working style for the rest of the session. Italian, with an English variant. |
+| [`valutazione-fv`](plugins/valutazione-fv/) | Solar PV feasibility check for a company site: net square meters, real production via the PVGIS connector, payback and cash-flow. Teaching material. |
 
 _More to come. The marketplace grows over time; run `claude plugin marketplace update aimax-marketplace` to see new additions._
 

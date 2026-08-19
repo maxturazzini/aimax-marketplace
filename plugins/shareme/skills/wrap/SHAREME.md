@@ -96,8 +96,8 @@ Verify with: `python scripts/analyze_skill.py /path/to/some/skill` and check the
 
 - **License**: MIT (see [`LICENSE`](../../LICENSE))
 - **Warranty**: none. The skill produces drafts; the human reviews and ships.
-- **Attribution**: not required, appreciated. Link back to `github.com/maxturazzini/shareme`.
-- **Contact**: open an issue at `github.com/maxturazzini/shareme/issues`.
+- **Attribution**: not required, appreciated. Link back to `github.com/maxturazzini/aimax-marketplace`.
+- **Contact**: open an issue at `github.com/maxturazzini/aimax-marketplace/issues`.
 
 ---
 

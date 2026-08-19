@@ -1,6 +1,6 @@
 ---
 name: wrap
-description: Wraps a Claude Code skill into a SHAREME-compliant adoption package. Produces a sibling folder named `<skill-name>_shared/` containing a copy of the skill with `# TODO_ADAPT:` markers and a `SHAREME.md` following the standard at github.com/maxturazzini/shareme. Use this skill whenever the user wants to share, publish, distribute, or document a Claude Code skill they authored. Trigger keywords - "make this skill shareable", "wrap skill for sharing", "prepare skill for sharing", "document skill for adoption", "create companion doc", "/shareme:wrap".
+description: Wraps a Claude Code skill into a SHAREME-compliant adoption package. Produces a sibling folder named `<skill-name>_shared/` containing a copy of the skill with `# TODO_ADAPT:` markers and a `SHAREME.md` following the standard at github.com/maxturazzini/aimax-marketplace. Use this skill whenever the user wants to share, publish, distribute, or document a Claude Code skill they authored. Trigger keywords - "make this skill shareable", "wrap skill for sharing", "prepare skill for sharing", "document skill for adoption", "create companion doc", "/shareme:wrap".
 ---
 
 # /shareme:wrap

@@ -1,0 +1,22 @@
+{
+  "name": "modalita-fastidio",
+  "displayName": "Modalità fastidio",
+  "description": "A session-wide behavior mode for your assistant: make yourself understood, finish what was asked, act instead of asking permission, answer questions without implementing them, go fast, keep it short. An antidote to verbosity. Ships in Italian, with an English variant included.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Max Turazzini",
+    "url": "https://github.com/maxturazzini"
+  },
+  "homepage": "https://maxturazzini.com",
+  "repository": "https://github.com/maxturazzini/aimax-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "skill",
+    "behavior",
+    "verbosity",
+    "communication",
+    "productivity",
+    "workflow"
+  ]
+}

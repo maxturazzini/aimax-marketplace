@@ -35,7 +35,7 @@ valutazione-fv/
 
 All'attivazione, Claude Code propone di collegare anche il **connettore PVGIS** dichiarato in `.mcp.json` (server pubblico remoto): conferma quando richiesto. Da quel momento la skill può recuperare la produzione reale di un tetto date le coordinate.
 
-> Su **Claude.ai (web)** il marketplace non si installa da GitHub: la skill si aggiunge dalle Impostazioni e il connettore PVGIS si aggiunge a mano come "Connettore personalizzato" con URL `https://pvgis-mcp.k76js8pfvm.workers.dev/mcp`.
+> Su **Claude.ai (web)** il plugin si installa dalla directory plugin del marketplace AI, MAX (Personalizza → Plugin). Se il connettore PVGIS non risulta già collegato col plugin, aggiungilo a mano come "Connettore personalizzato" con URL `https://pvgis-mcp.k76js8pfvm.workers.dev/mcp`.
 
 ## Il connettore PVGIS
 
